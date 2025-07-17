@@ -7,7 +7,7 @@ Proyek Python ringan untuk bikin AI asisten suara yang bisa diajak ngobrol pakai
 ## ✨ Fitur Utama
 
 - 🎧 **Dengar suara kamu** via microphone (speech recognition)
-- 🧠 **Jawab pertanyaan** Jawab pakai AI via tgpt + Groq API (model Meta Llama 4)
+- 🧠 **Jawab pertanyaan** pakai AI via tgpt + Groq API (model Meta Llama 4)
 - 🔊 **Ngomong balik** pakai suara TTS Indonesia dari Edge TTS
 - 📌 **Nongkrong di system tray** kayak asisten pribadi 
 - 🎵 **Suara cue blip** saat mulai rekaman biar keren
