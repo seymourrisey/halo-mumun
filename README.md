@@ -22,7 +22,7 @@ Proyek Python ringan untuk bikin AI asisten suara yang bisa diajak ngobrol pakai
 git clone https://github.com/username/halo-mumun.git
 cd halo-mumun
 ```
-### 🧾 🧪 2. (Opsional) Buat Virtual Environment
+### 🧪 2. (Opsional) Buat Virtual Environment
 
 ```bash
 python -m venv venv
