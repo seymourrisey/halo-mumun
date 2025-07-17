@@ -13,6 +13,11 @@ from PIL import Image
 load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
+base_dir = os.path.dirname(os.path.abspath(__file__))
+cue_file = os.path.join(base_dir, "blip.wav")
+icon_path = os.path.join(base_dir, "mumun-tray.png")
+tgpt_path = os.path.join(base_dir, "tgpt.exe")
+
 def listen_and_transcribe():
     r = sr.Recognizer()
     r.energy_threshold = 300
@@ -32,7 +37,6 @@ def listen_and_transcribe():
 
 def get_gpt_response(prompt):
     try:
-        tgpt_path = "E:/Project/mumun/tgpt.exe"
         command = [
             tgpt_path,
             "--provider", "groq",
@@ -66,7 +70,6 @@ async def speak(text):
     pygame.mixer.quit()
 
 def play_cue_sound():
-    cue_file = "blip.wav"
     if pygame.mixer.get_init():
         pygame.mixer.quit()
     pygame.mixer.init()
@@ -93,7 +96,7 @@ def on_exit(icon, item):
     icon.stop()
 
 def create_image():
-    return Image.open("mumun-tray.png")
+    return Image.open(icon_path)
 
 menu = pystray.Menu(
     pystray.MenuItem("🎤 Mulai Dengarkan", lambda icon, item: threading.Thread(target=run_with_cue).start()),
