@@ -26,8 +26,7 @@ cd halo-mumun
 
 ```bash
 python -m venv venv
-venv\Scripts\activate  # Windows
-# source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate  
 ```
 
 ### 📦 3. Install Semua Dependency
