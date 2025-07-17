@@ -67,7 +67,7 @@ MumunAI.exe
 
 ## 🧠 Credits
 - tgpt oleh @aandrew-me
-- edge-tts
+- edge-tts oleh @rany2
 - Microsoft TTS voices
 
 ## 📮 License
