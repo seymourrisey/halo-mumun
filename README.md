@@ -1,5 +1,4 @@
-# ![icon-mumun](mumun-tray.png) 
-# Halo Mumun - AI Asisten Ngobrol Santai di System Tray
+# ![icon-mumun](mumun-tray.png) Halo Mumun - AI Asisten Ngobrol Santai di System Tray
 
 Proyek Python ringan untuk bikin AI asisten suara yang bisa diajak ngobrol pakai gaya santai. Mumun nongkrong di tray bar, siap dengerin dan ngerespon kamu kayak temen ngobrol.
 
