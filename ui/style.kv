@@ -1,0 +1,63 @@
+#:kivy 2.3.1
+
+<InputAPIKeyScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 40
+        spacing: 20
+
+        Label:
+            text: "Masukkan API Key kamu"
+            font_size: 18
+
+        TextInput:
+            id: api_input
+            hint_text: "gsk_xxxxxx"
+            multiline: False
+            size_hint_y: None
+            height: 40
+
+        Button:
+            text: "Simpan & Mulai"
+            size_hint_y: None
+            height: 40
+            on_press: root.save_key()
+
+
+<MainScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: 10
+        padding: 20
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, 1  # Hitam elegan
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Image:
+            source: "ui/assets/mumun.png"
+            allow_stretch: True
+            keep_ratio: True
+            size_hint_y: 0.6
+
+        Label:
+            id: status_label
+            text: "..."
+            color: 1, 1, 1, 1
+            font_size: 16
+            size_hint_y: 0.15
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.25
+            spacing: 20
+
+            Button:
+                text: "🎙️  Bicara"
+                font_size: 16
+
+            Button:
+                text: "⚙️"
+                size_hint_x: 0.2
