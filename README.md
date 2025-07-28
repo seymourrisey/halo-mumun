@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./mumun-tray.png" alt="MumunLogo" width="320"/>
+  <img src="./mumun-tray.png" alt="MumunLogo" width="150"/>
 </p>
 
 #  Halo Mumun - AI Asisten Ngobrol Santai di System Tray
