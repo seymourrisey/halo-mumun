@@ -70,8 +70,8 @@ MumunAI.exe
 ---
 
 ## 🧠 Credits
-- tgpt oleh @aandrew-me
-- edge-tts oleh @rany2
+- tgpt oleh [@aandrew-me](https://github.com/aandrew-me/tgpt)
+- edge-tts oleh [@rany2](https://github.com/rany2/edge-tts)
 - Microsoft TTS voices
 
 ## 📮 License
