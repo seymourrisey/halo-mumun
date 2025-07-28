@@ -20,6 +20,8 @@ Proyek Python ringan untuk bikin AI asisten suara yang bisa diajak ngobrol pakai
 
 ## ⚙️ Cara Install dan Jalankan
 
+> 💡 **Diperlukan Python versi 3.11** atau lebih baru agar kompatibel dengan semua dependensi.
+
 ### 🧾 1. Clone Reponya
 
 ```bash
