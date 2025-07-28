@@ -33,12 +33,7 @@
 ::978f952a14a936cc963da21a135fa983
 @echo off
 title Mumun AI 
-echo 🔁 Menjalankan Mumun AI Assistant...
-
-REM Aktifkan virtual environment
-call .venv\Scripts\activate
-
-REM Jalankan skrip utama
+echo Menjalankan Mumun AI Assistant...
+call "%~dp0venv\Scripts\activate.bat"
 python mumun.py
-
 pause
