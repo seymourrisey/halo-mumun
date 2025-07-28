@@ -20,7 +20,8 @@ Proyek Python ringan untuk bikin AI asisten suara yang bisa diajak ngobrol pakai
 
 ## ⚙️ Cara Install dan Jalankan
 
-> 💡 **Diperlukan Python versi 3.11** atau lebih baru agar kompatibel dengan semua dependensi.
+> 💡⚠️ Proyek ini hanya kompatibel dengan **Python 3.11**.  
+Versi Python 3.12 atau 3.13 belum sepenuhnya didukung oleh library yang digunakan (seperti edge-tts dan pystray).
 
 ### 🧾 1. Clone Reponya
 
