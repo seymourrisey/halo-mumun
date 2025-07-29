@@ -1,63 +1,61 @@
 #:kivy 2.3.1
 
-<InputAPIKeyScreen>:
-    BoxLayout:
-        orientation: 'vertical'
-        padding: 40
-        spacing: 20
-
-        Label:
-            text: "Masukkan API Key kamu"
-            font_size: 18
-
-        TextInput:
-            id: api_input
-            hint_text: "gsk_xxxxxx"
-            multiline: False
-            size_hint_y: None
-            height: 40
-
-        Button:
-            text: "Simpan & Mulai"
-            size_hint_y: None
-            height: 40
-            on_press: root.save_key()
-
+<IconButton@ButtonBehavior+Image>:
+    size_hint: None, None
+    size: 64, 64
+    allow_stretch: True
+    keep_ratio: True
 
 <MainScreen>:
     BoxLayout:
-        orientation: 'vertical'
+        orientation: "vertical"
         spacing: 10
-        padding: 20
+        padding: [0, 40, 0, 20]  # atas lebih tinggi
         canvas.before:
             Color:
-                rgba: 0, 0, 0, 1  # Hitam elegan
+                rgba: 0, 0, 0, 1
             Rectangle:
                 pos: self.pos
                 size: self.size
 
         Image:
             source: "ui/assets/mumun.png"
+            size_hint: None, None
+            size: 128, 128
+            pos_hint: {"center_x": 0.5}
             allow_stretch: True
             keep_ratio: True
-            size_hint_y: 0.6
 
         Label:
             id: status_label
-            text: "..."
+            text: "halo  mumun"
+            font_name: "ui/assets/fonts/ModernDOS8x8.ttf"
+            font_size: 20
             color: 1, 1, 1, 1
-            font_size: 16
-            size_hint_y: 0.15
+            halign: "center"
+            valign: "middle"
+            text_size: self.size
+            size_hint_y: None
+            height: 40
 
-        BoxLayout:
-            orientation: 'horizontal'
-            size_hint_y: 0.25
-            spacing: 20
+        AnchorLayout:
+            anchor_x: "center"
+            anchor_y: "center"
+            size_hint_y: None
+            height: 100
 
-            Button:
-                text: "🎙️  Bicara"
-                font_size: 16
+            BoxLayout:
+                orientation: "horizontal"
+                spacing: 40
+                size_hint: None, None
+                size: self.minimum_size
 
-            Button:
-                text: "⚙️"
-                size_hint_x: 0.2
+                IconButton:
+                    id: mic_button
+                    source: "ui/assets/icons/mic.png"
+                    on_press: root.toggle_mic()
+
+
+                IconButton:
+                    source: "ui/assets/icons/settings.png"
+                    on_press: root.open_settings()
