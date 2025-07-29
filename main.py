@@ -7,7 +7,6 @@ from kivy.uix.screenmanager import Screen
 from kivy.properties import BooleanProperty
 from kivy.clock import Clock
 
-
 import os
 import json
 
