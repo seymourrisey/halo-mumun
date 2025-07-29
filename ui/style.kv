@@ -1,5 +1,15 @@
 #:kivy 2.3.1
 
+<MyButton@Button>:
+    font_size: 20
+    font_name: "ui/assets/fonts/ModernDOS8x8.ttf"
+    background_normal: ""
+    background_color: 0.2, 0.2, 0.2, 1
+    color: 1, 1, 1, 1
+    size_hint_y: None
+    height: 40
+
+
 <IconButton@ButtonBehavior+Image>:
     size_hint: None, None
     size: 64, 64
@@ -28,7 +38,7 @@
 
         Label:
             id: status_label
-            text: "halo  mumun"
+            text: "Halo  Mumun"
             font_name: "ui/assets/fonts/ModernDOS8x8.ttf"
             font_size: 20
             color: 1, 1, 1, 1
@@ -58,4 +68,123 @@
 
                 IconButton:
                     source: "ui/assets/icons/settings.png"
-                    on_press: root.open_settings()
+                    on_press: app.root.current = "settings"
+
+<InputAPIKeyScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: [30, 40]
+        spacing: 20
+
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            text: "Masukkan API Key kamu"
+            font_name: "ui/assets/fonts/ModernDOS8x8.ttf"
+            font_size: 18
+            color: 1, 1, 1, 1
+            size_hint_y: None
+            height: 30
+
+        TextInput:
+            id: api_input
+            hint_text: "contoh: sk-groq-xxxxxx"
+            font_name: "ui/assets/fonts/ModernDOS8x8.ttf"
+            font_size: 16
+            multiline: False
+            size_hint_y: None
+            height: 40
+            foreground_color: 1, 1, 1, 1
+            background_color: 0.1, 0.1, 0.1, 1
+            cursor_color: 1, 1, 1, 1
+
+        MyButton:
+            text: "Simpan dan Mulai"
+            font_name: "ui/assets/fonts/ModernDOS8x8.ttf"
+            size_hint_y: None
+            height: 40
+            on_press: root.save_key()
+
+<SettingsScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        spacing: 10
+        padding: [20, 30]
+
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            text: "Edit API Key"
+            font_name: "ui/assets/fonts/ModernDOS8x8.ttf"
+            font_size: 24
+            color: 1, 1, 1, 1
+            size_hint_y: None
+            height: 30
+
+        TextInput:
+            id: api_input
+            font_name: "ui/assets/fonts/ModernDOS8x8.ttf"
+            font_size: 18
+            multiline: False
+            height: 40
+            size_hint_y: None
+            foreground_color: 1, 1, 1, 1
+            background_color: 0.1, 0.1, 0.1, 1
+
+        MyButton:
+            text: "Simpan API Key"
+            font_name: "ui/assets/fonts/ModernDOS8x8.ttf"
+            size_hint_y: None
+            height: 40
+            on_press: root.save_key()
+
+        Label:
+            id: status_label
+            text: ""
+            font_name: "ui/assets/fonts/ModernDOS8x8.ttf"
+            font_size: 18
+            color: 1, 1, 1, 1
+            size_hint_y: None
+            height: 30
+
+        Widget:
+            size_hint_y: None
+            height: 10
+
+        # About Aplikasi
+
+        Label:
+            text: "Tentang Aplikasi"
+            font_name: "ui/assets/fonts/ModernDOS8x8.ttf"
+            font_size: 24
+            color: 1, 1, 1, 1
+            size_hint_y: None
+            height: 30
+
+        Label:
+            text: "Halo Mumun v0.0.1\n\nDibuat oleh: Seymourissey \n\nModel: LLaMA3 + Edge-TTS"
+            font_name: "ui/assets/fonts/ModernDOS8x8.ttf"
+            font_size: 18
+            color: 1, 1, 1, 1
+            halign: "center"
+            valign: "middle"
+            text_size: self.size
+
+        MyButton:
+            text: "Kembali"
+            font_name: "ui/assets/fonts/ModernDOS8x8.ttf"
+            font_size: 20
+            size_hint_y: None
+            height: 40
+            on_press: app.root.current = "main"
+
