@@ -7,6 +7,8 @@ from kivy.properties import BooleanProperty
 from kivy.clock import Clock
 from kivy.animation import Animation
 
+import pystray
+from PIL import Image
 
 import speech_recognition as sr
 import threading
@@ -16,11 +18,11 @@ from core import mic
 from core.ai import get_gpt_response
 from core.tts import speak
 
+
 import logging
 
 import os
 import json
-
 
 Config.set('graphics', 'width', '360')
 Config.set('graphics', 'height', '440')
@@ -113,7 +115,6 @@ class MainScreen(Screen):
         logging.basicConfig(level=logging.INFO)
         logging.info(f"[USER SAID]: {user_text}") 
 
-        #Clock.schedule_once(lambda dt: self.mumun_reply(user_text=user_text), 2)
         threading.Thread(target=self.process_ai_response, args=(user_text,)).start()
 
     def process_ai_response(self, user_text):
@@ -136,39 +137,57 @@ class MainScreen(Screen):
         Clock.schedule_once(self.reset_status_label, 1)
         self.ids.mic_button.disabled = True
 
-    # def mumun_reply(self, *args, user_text):
-    #     self.animate_mumun_speaking()
-    #     self.animate_status_label("Mumun berbicara...")
-    #     if user_text.startswith("["):
-    #         response = "Sepertinya ada gangguan saat mendengarkan kamu barusan."
-    #     else:
-    #         response = f"Kamu berkata: {user_text}"
-
-    #     # Di sini kamu bisa jalankan edge-tts atau AI
-    #     Clock.schedule_once(self.reset_status_label, 3)
-
     def reset_status_label(self, *args):
         self.animate_status_label("Halo  Mumun")
         self.ids.mic_button.disabled = False
         self.mumun_idle
         self.ids.mic_button.opacity = 1
 
-                
+
+from kivy.core.window import Window                
 class MumunApp(App):
     def build(self):
         Builder.load_file("ui/style.kv")
-        sm = ScreenManager()
 
+        sm = ScreenManager()
         sm.add_widget(InputAPIKeyScreen(name="input"))
         sm.add_widget(MainScreen(name="main"))
         sm.add_widget(SettingsScreen(name="settings"))
-        
+
         if not load_api_key():
             sm.current = "input"
         else:
             sm.current = "main"
 
         return sm
+    
+    def on_start(self):
+        Window.bind(on_minimize=self.on_minimize)
+
+        threading.Thread(target=self.run_tray_icon, daemon=True).start()
+
+    def on_minimize(icon, item):
+            Window.hide()
+            return True
+    
+    def run_tray_icon(self):
+        image = Image.open("ui/assets/mumun.png")
+
+        def on_quit(icon, item):
+            icon.stop()
+            App.get_running_app().stop()
+
+        def show_window(icon, item):
+                def restore(dt):
+                    Window.show()
+                    Window.raise_window()
+                Clock.schedule_once(restore)
+
+        icon = pystray.Icon("Mumun", image, menu=pystray.Menu(
+            pystray.MenuItem("Open Mumun", show_window),
+            pystray.MenuItem("❌ Keluar", on_quit)
+        ))
+        icon.run()
 
 if __name__ == "__main__":
     MumunApp().run()
