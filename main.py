@@ -1,5 +1,5 @@
 from kivy.config import Config
-# Setup resolusi window
+
 Config.set('graphics', 'width', '360')
 Config.set('graphics', 'height', '440')
 Config.set('graphics', 'resizable', False)

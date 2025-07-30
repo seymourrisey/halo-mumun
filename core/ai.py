@@ -1,15 +1,21 @@
 import subprocess
 import os
+import sys
 
 from core.config import load_api_key
+import subprocess
 
-TGPT_PATH = os.path.join("bin", "tgpt.exe")  
+TGPT_PATH = os.path.join("bin", "tgpt.exe")
 
 DEFAULT_PREPROMPT = (
     "Nama kamu adalah 'Mumun'. Jawab dengan bahasa Indonesia. "
     "Gaya bicara santai, ngobrol, dan singkat. Sedikit judes tapi tetap ramah:"
 )
 
+STARTUPINFO = None
+if sys.platform == "win32":
+    STARTUPINFO = subprocess.STARTUPINFO()
+    STARTUPINFO.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
 def get_gpt_response(prompt: str) -> str:
     try:
@@ -30,11 +36,13 @@ def get_gpt_response(prompt: str) -> str:
             command,
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
+            startupinfo=STARTUPINFO  # <- ini penting!
         )
 
+        
+
         output = result.stdout.strip()
-        # Filter baris kosong dan info loading
         lines = [line for line in output.splitlines() if len(line.strip()) > 20 and "Loading" not in line]
         reply = "\n".join(lines).strip()
 
