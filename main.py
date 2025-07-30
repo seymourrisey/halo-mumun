@@ -2,85 +2,118 @@ from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.config import Config
 from kivy.lang import Builder
-
 from kivy.uix.screenmanager import Screen
 from kivy.properties import BooleanProperty
 from kivy.clock import Clock
+from kivy.animation import Animation
+
+
+import speech_recognition as sr
+import threading
+
+from core.config import save_api_key, load_api_key
+from core import mic
+
+import logging
+logging.basicConfig(level=logging.INFO)
 
 import os
 import json
 
-# Atur ukuran window
+
 Config.set('graphics', 'width', '360')
 Config.set('graphics', 'height', '440')
 Config.set('graphics', 'resizable', False)
-
-CONFIG_PATH = "data/mumun_config.json"
 
 class InputAPIKeyScreen(Screen):
     def save_key(self):
         key = self.ids.api_input.text.strip()
         if key:
-            os.makedirs("data", exist_ok=True)
-            with open(CONFIG_PATH, "w") as f:
-                json.dump({"groq_api_key": key}, f)
+            save_api_key(key)
             self.manager.current = "main"
 
 class MainScreen(Screen):
     is_listening = BooleanProperty(False)
-    _listen_event = None
+    
+    def animate_status_label(self, new_text):
+        label = self.ids.status_label
+        fade_out = Animation(opacity=0, duration=0.2)
+        fade_in = Animation(opacity=1, duration=0.2)
+
+        def update_text(*args):
+            label.text = new_text
+
+        fade_out.bind(on_complete=update_text)
+        fade_out.start(label)
+        fade_out.bind(on_complete=lambda *x: fade_in.start(label))
+
+    def set_mumun_thinking(self):
+        Animation(opacity=0.3, duration=0.3).start(self.ids.mumun_image)
+
+    def animate_mumun_speaking(self):
+        self.ids.mumun_image.opacity = 0.2 
+        Animation(opacity=1, duration=0.4).start(self.ids.mumun_image)
+    
+    def mumun_idle(self):
+        self.ids.mumun_image.opacity = 1
 
     def toggle_mic(self):
         if not self.is_listening:
-            # START listening
+            #self.ids.mic_button.disabled = True
             self.ids.mic_button.source = "ui/assets/icons/mic_pressed.png"
-            self.ids.status_label.text = "Mumun mulai mendengarkan..."
+            self.animate_status_label("Mumun mulai mendengarkan...")
             self.is_listening = True
+            mic.should_cancel = False
 
-            self._listen_event = Clock.schedule_once(self.on_listen_complete, 3)
+            threading.Thread(target=self.start_listening).start()
         else:
-            # STOP (cancel listening)
-            if self._listen_event:
-                self._listen_event.cancel()
-                self._listen_event = None
-
+            #self.ids.mic_button.disabled = True
+            mic.should_cancel = True
             self.ids.mic_button.source = "ui/assets/icons/mic.png"
-            self.ids.status_label.text = "Halo Mumun"
+            self.animate_status_label("Halo Mumun")
             self.is_listening = False
 
+    def start_listening(self):
+        user_text = mic.listen_once(timeout=5, phrase_time_limit=8)
+        Clock.schedule_once(lambda dt: self.on_recognize_complete(user_text))
 
-    def on_listen_complete(self, *args):
+    def on_recognize_complete(self, user_text):
         self.ids.mic_button.source = "ui/assets/icons/mic.png"
-        self.ids.status_label.text = "Mumun sedang berpikir..."
+        self.set_mumun_thinking()
+        self.animate_status_label("Mumun sedang berpikir...")
         self.is_listening = False
-        self.ids.mic_button.disabled = True
 
-        # Simulasi AI processing → lalu jawab
-        Clock.schedule_once(self.mumun_reply, 2)
+        logging.info(f"[USER SAID]: {user_text}") # log test
+        Clock.schedule_once(lambda dt: self.mumun_reply(user_text=user_text), 2)
 
-    def mumun_reply(self, *args):
-        self.ids.status_label.text = "Mumun berbicara..."
-        # Di sini kamu bisa jalankan edge-tts atau apapun
+    def mumun_reply(self, *args, user_text):
+        self.animate_mumun_speaking()
+        self.animate_status_label("Mumun berbicara...")
+        if user_text.startswith("["):
+            response = "Sepertinya ada gangguan saat mendengarkan kamu barusan."
+        else:
+            response = f"Kamu berkata: {user_text}"
+
+        # Di sini kamu bisa jalankan edge-tts atau AI
         Clock.schedule_once(self.reset_status_label, 3)
 
     def reset_status_label(self, *args):
-        self.ids.status_label.text = "Halo  Mumun"
+        self.animate_status_label("Halo  Mumun")
         self.ids.mic_button.disabled = False
-    
+        self.mumun_idle
+
+
 class SettingsScreen(Screen):
     def on_pre_enter(self):
         self.ids.status_label.text = ""
-        # Tampilkan API key saat ini (jika ada)
-        if os.path.exists(CONFIG_PATH):
-            with open(CONFIG_PATH) as f:
-                data = json.load(f)
-                self.ids.api_input.text = data.get("groq_api_key", "")
+        current_key = load_api_key()
+        if current_key:
+            self.ids.api_input.text = current_key
 
     def save_key(self):
         new_key = self.ids.api_input.text.strip()
         if new_key:
-            with open(CONFIG_PATH, "w") as f:
-                json.dump({"groq_api_key": new_key}, f)
+            save_api_key(new_key)
             self.ids.status_label.text = "API key disimpan!"
         else:
             self.ids.status_label.text = "API key tidak boleh kosong."
@@ -99,19 +132,11 @@ class MumunApp(App):
         sm.add_widget(InputAPIKeyScreen(name="input"))
         sm.add_widget(MainScreen(name="main"))
         sm.add_widget(SettingsScreen(name="settings"))
-
-        if os.path.exists(CONFIG_PATH):
-            try:
-                with open(CONFIG_PATH) as f:
-                    data = json.load(f)
-                    if data.get("groq_api_key"):
-                        sm.current = "main"
-                    else:
-                        sm.current = "input"
-            except:
-                sm.current = "input"
-        else:
+        
+        if not load_api_key():
             sm.current = "input"
+        else:
+            sm.current = "main"
 
         return sm
 
