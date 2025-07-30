@@ -6,6 +6,10 @@
 
 **Halo Mumun** adalah asisten AI ringan berbasis ChatGPT (via `tgpt`) dan Edge-TTS, kini hadir dalam antarmuka grafis (**GUI**) menggunakan **Kivy**. Dirancang sebagai aplikasi portable untuk Windows—langsung jalan, tanpa instalasi.
 
+<p align="center">
+  <img src="./mumun-preview.png" alt="MumunPreview" width="200"/>
+</p>
+
 ---
 
 ## ✨ Fitur
