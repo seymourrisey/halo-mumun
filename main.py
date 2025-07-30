@@ -11,11 +11,12 @@ from kivy.animation import Animation
 import speech_recognition as sr
 import threading
 
-from core.config import save_api_key, load_api_key
+from core.config import save_api_key, load_api_key, is_valid_api_key
 from core import mic
+from core.ai import get_gpt_response
+from core.tts import speak
 
 import logging
-logging.basicConfig(level=logging.INFO)
 
 import os
 import json
@@ -31,6 +32,29 @@ class InputAPIKeyScreen(Screen):
         if key:
             save_api_key(key)
             self.manager.current = "main"
+
+class SettingsScreen(Screen):
+    def on_pre_enter(self):
+        self.ids.status_label.text = ""
+        current_key = load_api_key()
+        if current_key:
+            self.ids.api_input.text = current_key
+
+    def save_key(self):
+        new_key = self.ids.api_input.text.strip()
+        if not new_key:
+            self.ids.status_label.text = "API key tidak boleh kosong."
+        elif not is_valid_api_key(new_key):
+            self.ids.status_label.text = "Format API key tidak valid."
+        else:
+            save_api_key(new_key)
+            self.ids.status_label.text = "API key disimpan!"
+
+        Clock.schedule_once(self.clear_status_label, 2)
+
+    def clear_status_label(self, dt):
+        self.ids.status_label.text = ""
+
 
 class MainScreen(Screen):
     is_listening = BooleanProperty(False)
@@ -82,46 +106,52 @@ class MainScreen(Screen):
         self.set_mumun_thinking()
         self.animate_status_label("Mumun sedang berpikir...")
         self.is_listening = False
+        self.ids.mic_button.disabled = True
 
-        logging.info(f"[USER SAID]: {user_text}") # log test
-        Clock.schedule_once(lambda dt: self.mumun_reply(user_text=user_text), 2)
+        self.ids.mic_button.opacity = 0.3
 
-    def mumun_reply(self, *args, user_text):
+        logging.basicConfig(level=logging.INFO)
+        logging.info(f"[USER SAID]: {user_text}") 
+
+        #Clock.schedule_once(lambda dt: self.mumun_reply(user_text=user_text), 2)
+        threading.Thread(target=self.process_ai_response, args=(user_text,)).start()
+
+    def process_ai_response(self, user_text):
+        from core.ai import get_gpt_response
+        reply = get_gpt_response(user_text)
+        Clock.schedule_once(lambda dt: self.mumun_reply(reply_text=reply))
+
+    def mumun_reply(self, reply_text):
         self.animate_mumun_speaking()
         self.animate_status_label("Mumun berbicara...")
-        if user_text.startswith("["):
-            response = "Sepertinya ada gangguan saat mendengarkan kamu barusan."
-        else:
-            response = f"Kamu berkata: {user_text}"
 
-        # Di sini kamu bisa jalankan edge-tts atau AI
-        Clock.schedule_once(self.reset_status_label, 3)
+        print(f"[MUMUN]: {reply_text}")
+        
+        threading.Thread(target=self.run_tts, args=(reply_text,)).start()
+
+    def run_tts(self, reply_text):
+        from core.tts import speak
+        import asyncio
+        asyncio.run(speak(reply_text))
+        Clock.schedule_once(self.reset_status_label, 1)
+        self.ids.mic_button.disabled = True
+
+    # def mumun_reply(self, *args, user_text):
+    #     self.animate_mumun_speaking()
+    #     self.animate_status_label("Mumun berbicara...")
+    #     if user_text.startswith("["):
+    #         response = "Sepertinya ada gangguan saat mendengarkan kamu barusan."
+    #     else:
+    #         response = f"Kamu berkata: {user_text}"
+
+    #     # Di sini kamu bisa jalankan edge-tts atau AI
+    #     Clock.schedule_once(self.reset_status_label, 3)
 
     def reset_status_label(self, *args):
         self.animate_status_label("Halo  Mumun")
         self.ids.mic_button.disabled = False
         self.mumun_idle
-
-
-class SettingsScreen(Screen):
-    def on_pre_enter(self):
-        self.ids.status_label.text = ""
-        current_key = load_api_key()
-        if current_key:
-            self.ids.api_input.text = current_key
-
-    def save_key(self):
-        new_key = self.ids.api_input.text.strip()
-        if new_key:
-            save_api_key(new_key)
-            self.ids.status_label.text = "API key disimpan!"
-        else:
-            self.ids.status_label.text = "API key tidak boleh kosong."
-
-        Clock.schedule_once(self.clear_status_label, 2)
-
-    def clear_status_label(self, dt):
-        self.ids.status_label.text = ""
+        self.ids.mic_button.opacity = 1
 
                 
 class MumunApp(App):
