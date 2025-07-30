@@ -2,7 +2,7 @@
   <img src="./mumun-tray.png" alt="MumunLogo" width="150"/>
 </p>
 
-> 💻 versi GUI portable (Windows)?  
+> 💻 versi GUI portable (Windows)
 > 👉 Klik [di sini](https://github.com/seymourrisey/halo-mumun/tree/gui-version)
 
 #  Halo Mumun - AI Asisten Ngobrol Santai di System Tray
