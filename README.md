@@ -2,6 +2,9 @@
   <img src="./mumun-tray.png" alt="MumunLogo" width="150"/>
 </p>
 
+> 💻 versi GUI portable (Windows)?  
+> 👉 Klik [di sini](https://github.com/seymourrisey/halo-mumun/tree/gui-version)
+
 #  Halo Mumun - AI Asisten Ngobrol Santai di System Tray
 
 Proyek Python ringan untuk bikin AI asisten suara yang bisa diajak ngobrol pakai gaya santai. Mumun nongkrong di tray bar, siap dengerin dan ngerespon kamu kayak temen ngobrol.
@@ -17,6 +20,7 @@ Proyek Python ringan untuk bikin AI asisten suara yang bisa diajak ngobrol pakai
 - 🎵 **Suara cue blip** saat mulai rekaman biar keren
 
 ---
+
 
 ## ⚙️ Cara Install dan Jalankan
 
