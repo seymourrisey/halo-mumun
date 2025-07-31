@@ -25,7 +25,7 @@
 
 ## 🚀 Cara Menjalankan (Versi Portable)
 
-1. **Download file ZIP release**
+1. **Download file ZIP [Release](https://github.com/seymourrisey/halo-mumun/releases/tag/v0.0.1)**
 2. **Ekstrak ke folder mana pun** (misalnya `C:\Mumun`)
 3. Jalankan file:
 
