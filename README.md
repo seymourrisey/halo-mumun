@@ -80,6 +80,7 @@ MumunAI.exe
 - tgpt oleh [@aandrew-me](https://github.com/aandrew-me/tgpt)
 - edge-tts oleh [@rany2](https://github.com/rany2/edge-tts)
 - Microsoft TTS voices
+- halo-mumun oleh [@seymourrisey](https://github.com/seymourrisey/halo-mumun)
 
 ## 📮 License
 
